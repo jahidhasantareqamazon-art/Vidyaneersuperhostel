@@ -1,0 +1,8 @@
+{
+  "name": "Bidyanidhi Hostel",
+  "description": "নরসিংদী সরকারি কলেজ সংলগ্ন Bidyanidhi Hostel-এ শিক্ষার্থীদের জন্য আবাসিক সুবিধা, রুমের তথ্য ও বুকিং অনুসন্ধান করুন।",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

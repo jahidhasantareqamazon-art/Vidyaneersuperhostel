@@ -1,0 +1,227 @@
+{
+  "entities": {
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized hostel administrator profile and role record.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "minLength": 3, "maxLength": 160 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "phone": { "type": "string", "minLength": 0, "maxLength": 20 },
+        "role": { "type": "string", "enum": ["super_admin", "manager"] },
+        "designation": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "role", "updatedAt"]
+    },
+    "Room": {
+      "title": "Room",
+      "description": "Hostel room category with capacity, availability, facilities, and admin-editable fee.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "category": { "type": "string", "enum": ["single", "double", "multiple"] },
+        "titleBn": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "titleEn": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "descriptionBn": { "type": "string", "minLength": 5, "maxLength": 1000 },
+        "descriptionEn": { "type": "string", "minLength": 5, "maxLength": 1000 },
+        "capacity": { "type": "number" },
+        "availableSeats": { "type": "number" },
+        "monthlyRent": { "type": "number" },
+        "priceConfirmed": { "type": "boolean" },
+        "pricePlaceholderBn": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "pricePlaceholderEn": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "availabilityStatus": { "type": "string", "enum": ["available", "limited", "full", "maintenance"] },
+        "facilitiesBn": { "type": "array" },
+        "facilitiesEn": { "type": "array" },
+        "primaryImage": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "sortOrder": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "category", "titleBn", "titleEn", "descriptionBn", "descriptionEn", "capacity", "availableSeats", "priceConfirmed", "pricePlaceholderBn", "pricePlaceholderEn", "availabilityStatus", "facilitiesBn", "facilitiesEn", "primaryImage", "sortOrder", "updatedAt"]
+    },
+    "RoomImage": {
+      "title": "RoomImage",
+      "description": "Additional photo associated with a room.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "roomId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "imageUrl": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "captionBn": { "type": "string", "minLength": 0, "maxLength": 160 },
+        "captionEn": { "type": "string", "minLength": 0, "maxLength": 160 },
+        "sortOrder": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "roomId", "imageUrl", "sortOrder", "createdAt"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Student room booking or admission inquiry record (PII protected).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "bookingCode": { "type": "string", "minLength": 6, "maxLength": 32, "pattern": "^[A-Z0-9\\-]+$" },
+        "studentName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "mobile": { "type": "string", "minLength": 11, "maxLength": 15, "pattern": "^01[3-9][0-9]{8}$" },
+        "guardianMobile": { "type": "string", "minLength": 11, "maxLength": 15, "pattern": "^01[3-9][0-9]{8}$" },
+        "institution": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "roomId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "roomType": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "occupants": { "type": "number" },
+        "preferredDate": { "type": "string", "minLength": 8, "maxLength": 20 },
+        "message": { "type": "string", "minLength": 0, "maxLength": 800 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "completed"] },
+        "adminNote": { "type": "string", "minLength": 0, "maxLength": 500 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "bookingCode", "studentName", "mobile", "guardianMobile", "institution", "roomId", "roomType", "occupants", "preferredDate", "status", "createdAt", "updatedAt"]
+    },
+    "BookingStatus": {
+      "title": "BookingStatus",
+      "description": "Public non-PII booking status tracker keyed by unique bookingCode.",
+      "type": "object",
+      "properties": {
+        "bookingCode": { "type": "string", "minLength": 6, "maxLength": 32, "pattern": "^[A-Z0-9\\-]+$" },
+        "roomType": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "preferredDate": { "type": "string", "minLength": 8, "maxLength": 20 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "completed"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["bookingCode", "roomType", "preferredDate", "status", "createdAt", "updatedAt"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "General contact inquiry submitted from contact page (PII protected).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "senderName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "phone": { "type": "string", "minLength": 11, "maxLength": 15, "pattern": "^01[3-9][0-9]{8}$" },
+        "subject": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "message": { "type": "string", "minLength": 5, "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["new", "read", "replied"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "senderName", "phone", "subject", "message", "status", "createdAt"]
+    },
+    "Facility": {
+      "title": "Facility",
+      "description": "Hostel amenity or service item with admin confirmation flag.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "key": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "titleBn": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "titleEn": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "descriptionBn": { "type": "string", "minLength": 5, "maxLength": 500 },
+        "descriptionEn": { "type": "string", "minLength": 5, "maxLength": 500 },
+        "isConfirmed": { "type": "boolean" },
+        "isActive": { "type": "boolean" },
+        "sortOrder": { "type": "number" }
+      },
+      "required": ["id", "key", "titleBn", "titleEn", "descriptionBn", "descriptionEn", "isConfirmed", "isActive", "sortOrder"]
+    },
+    "GalleryItem": {
+      "title": "GalleryItem",
+      "description": "Categorized hostel photo for public gallery.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "category": { "type": "string", "enum": ["rooms", "building", "common", "facilities"] },
+        "titleBn": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "titleEn": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "imageUrl": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "sortOrder": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "category", "titleBn", "titleEn", "imageUrl", "sortOrder", "createdAt"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Admin-verified student or guardian testimonial.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "roleBn": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "roleEn": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "institution": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "quoteBn": { "type": "string", "minLength": 10, "maxLength": 600 },
+        "quoteEn": { "type": "string", "minLength": 10, "maxLength": 600 },
+        "isPublished": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "authorName", "roleBn", "roleEn", "institution", "quoteBn", "quoteEn", "isPublished", "createdAt"]
+    },
+    "WebsiteSettings": {
+      "title": "WebsiteSettings",
+      "description": "Global hostel website content, contact numbers, and SEO settings.",
+      "type": "object",
+      "properties": {
+        "hostelName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "hostelNameBn": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "addressBn": { "type": "string", "minLength": 5, "maxLength": 250 },
+        "addressEn": { "type": "string", "minLength": 5, "maxLength": 250 },
+        "phones": { "type": "array" },
+        "whatsappNumbers": { "type": "array" },
+        "heroHeadingBn": { "type": "string", "minLength": 5, "maxLength": 200 },
+        "heroHeadingEn": { "type": "string", "minLength": 5, "maxLength": 200 },
+        "heroSubheadingBn": { "type": "string", "minLength": 5, "maxLength": 350 },
+        "heroSubheadingEn": { "type": "string", "minLength": 5, "maxLength": 350 },
+        "aboutBn": { "type": "string", "minLength": 10, "maxLength": 1500 },
+        "aboutEn": { "type": "string", "minLength": 10, "maxLength": 1500 },
+        "seoTitle": { "type": "string", "minLength": 10, "maxLength": 140 },
+        "seoDescription": { "type": "string", "minLength": 20, "maxLength": 320 },
+        "seoKeywords": { "type": "string", "minLength": 5, "maxLength": 320 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["hostelName", "hostelNameBn", "addressBn", "addressEn", "phones", "whatsappNumbers", "heroHeadingBn", "heroHeadingEn", "heroSubheadingBn", "heroSubheadingEn", "aboutBn", "aboutEn", "seoTitle", "seoDescription", "seoKeywords", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/admins/{uid}": {
+      "schema": { "$ref": "#/entities/Admin" },
+      "description": "Authorized admin records."
+    },
+    "/rooms/{roomId}": {
+      "schema": { "$ref": "#/entities/Room" },
+      "description": "Hostel room categories and availability."
+    },
+    "/room_images/{imageId}": {
+      "schema": { "$ref": "#/entities/RoomImage" },
+      "description": "Additional photos linked to roomId."
+    },
+    "/bookings/{bookingId}": {
+      "schema": { "$ref": "#/entities/Booking" },
+      "description": "Student booking applications (PII restricted to admin)."
+    },
+    "/booking_status/{bookingCode}": {
+      "schema": { "$ref": "#/entities/BookingStatus" },
+      "description": "Public non-PII booking status tracker keyed by bookingCode."
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": { "$ref": "#/entities/Inquiry" },
+      "description": "General contact inquiries (PII restricted to admin)."
+    },
+    "/facilities/{facilityId}": {
+      "schema": { "$ref": "#/entities/Facility" },
+      "description": "Hostel amenities with admin confirmation flags."
+    },
+    "/gallery/{galleryId}": {
+      "schema": { "$ref": "#/entities/GalleryItem" },
+      "description": "Categorized photo gallery."
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": { "$ref": "#/entities/Testimonial" },
+      "description": "Admin-approved testimonials."
+    },
+    "/website_settings/{settingId}": {
+      "schema": { "$ref": "#/entities/WebsiteSettings" },
+      "description": "Global hostel site copy, phones, and SEO metadata."
+    }
+  }
+}
